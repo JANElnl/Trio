@@ -178,7 +178,7 @@ platform :ios do
     )
 
     def configure_bundle_id(name, identifier, capabilities)
-   bundle_id = Spaceship::ConnectAPI::BundleId.find(identifier) || Spaceship::ConnectAPI::BundleId.create(
+   bundle_id = Spaceship::ConnectAPI::BundleId.find(identifier) || Spaceship::ConnectAPI::BundleId.create(name: name, identifier: identifier)
   name: name,
   identifier: identifier,
   platform: Spaceship::ConnectAPI::Platform::IOS
