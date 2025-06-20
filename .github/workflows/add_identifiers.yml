@@ -5,7 +5,7 @@ on:
 
 jobs:
   validate:
-    name: Validate
+    name: Validate Secrets
     uses: ./.github/workflows/validate_secrets.yml
     secrets: inherit
   
@@ -14,11 +14,11 @@ jobs:
     needs: validate
     runs-on: macos-15
     steps:
-      # Checks-out the repo
+      # Checkout the repository
       - name: Checkout Repo
         uses: actions/checkout@v4
       
-      # Patch Fastlane Match to not print tables
+      # Patch Fastlane Match to prevent table output (avoid table printing for clarity)
       - name: Patch Match Tables
         run: |
           TABLE_PRINTER_PATH=$(ruby -e 'puts Gem::Specification.find_by_name("fastlane").gem_dir')/match/lib/match/table_printer.rb
@@ -29,16 +29,16 @@ jobs:
             exit 1
           fi
 
-      # Install project dependencies
+      # Install project dependencies via Bundler
       - name: Install Project Dependencies
         run: bundle install
 
-      # Sync the GitHub runner clock with the Windows time server (workaround as suggested in https://github.com/actions/runner/issues/2996)
-      - name: Sync clock
+      # Sync clock with Windows time server (workaround for GitHub Actions time drift issue)
+      - name: Sync Clock
         run: sudo sntp -sS time.windows.com
       
-      # Create or update identifiers for app
-      - name: Fastlane Provision
+      # Create or update the app identifiers using Fastlane
+      - name: Fastlane Provision Identifiers
         run: bundle exec fastlane identifiers
         env:
           TEAMID: ${{ secrets.TEAMID }}
